@@ -312,6 +312,14 @@ static INT32 mtk_wmt_probe(struct platform_device *pdev)
 	wmt_allocate_connsys_emi(pdev);
 	wmt_thermal_register(pdev);
 
+	if (wmt_consys_ic_ops == NULL)
+		wmt_consys_ic_ops = mtk_wcn_get_consys_ic_ops();
+
+	if (wmt_consys_ic_ops == NULL) {
+		WMT_PLAT_PR_ERR("wmt_consys_ic_ops is NULL!\n");
+		return -EINVAL;
+	}
+
 	if (wmt_consys_ic_ops->consys_ic_need_store_pdev) {
 		if (wmt_consys_ic_ops->consys_ic_need_store_pdev() == MTK_WCN_BOOL_TRUE) {
 			if (wmt_consys_ic_ops->consys_ic_store_pdev)
