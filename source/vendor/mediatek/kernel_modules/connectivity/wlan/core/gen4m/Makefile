@@ -278,18 +278,9 @@ else
     ccflags-y += -DCFG_SUPPORT_CHNL_CONFLICT_REVISE=1
 endif
 
-ifeq ($(CONFIG_MTK_AEE_FEATURE), y)
-    ccflags-y += -DCFG_SUPPORT_AEE=1
-else
-    ccflags-y += -DCFG_SUPPORT_AEE=0
-endif
+ccflags-y += -DCFG_SUPPORT_AEE=0
+ccflags-y += -DBUILD_QA_DBG=0
 
-# Disable ASSERT() for user load, enable for others
-ifneq ($(TARGET_BUILD_VARIANT),user)
-    ccflags-y += -DBUILD_QA_DBG=1
-else
-    ccflags-y += -DBUILD_QA_DBG=0
-endif
 
 ifeq ($(CONFIG_MTK_COMBO_WIFI),y)
     ccflags-y += -DCFG_WPS_DISCONNECT=1
@@ -425,9 +416,6 @@ else ifeq ($(CONFIG_MTK_COMBO_WIFI_HIF), none)
 ccflags-y += -I$(src)/os/$(os)/hif/none/include
 endif
 
-#ifdef OPLUS_FEATURE_WIFI_SMART_BW
-ccflags-y += -I$(src)/oppo_smart_bw_decision
-#endif /* OPLUS_FEATURE_WIFI_SMART_BW */
 
 ifneq ($(PLATFORM_FLAGS), )
     ccflags-y += $(PLATFORM_FLAGS)
@@ -709,9 +697,6 @@ SYSDVT_OBJS += $(SYSDVT_DIR)dvt_dmashdl.o
 endif
 endif
 
-#ifdef OPLUS_FEATURE_WIFI_SMART_BW
-SMART_BW_DECISION_OBJS += oppo_smart_bw_decision/oppo_smart_bw_decision.o
-#endif /* OPLUS_FEATURE_WIFI_SMART_BW */
 
 # ---------------------------------------------------
 # Service git List
@@ -753,9 +738,6 @@ $(MODULE_NAME)-objs  += $(MGMT_OBJS)
 $(MODULE_NAME)-objs  += $(CHIPS_OBJS)
 $(MODULE_NAME)-objs  += $(SYSDVT_OBJS)
 
-#ifdef OPLUS_FEATURE_WIFI_SMART_BW
-$(MODULE_NAME)-objs  += $(SMART_BW_DECISION_OBJS)
-#endif /* OPLUS_FEATURE_WIFI_SMART_BW */
 
 ifneq ($(findstring UT_TEST_MODE,$(MTK_COMBO_CHIP)),)
 include $(src)/test/ut.make

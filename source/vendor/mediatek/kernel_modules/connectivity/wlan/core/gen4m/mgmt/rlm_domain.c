@@ -70,10 +70,7 @@
  */
 #include "precomp.h"
 #include "rlm_txpwr_init.h"
-#ifdef OPLUS_BUG_COMPATIBILITY
-//Add for: wifi sar feature, mtk vendor
-#include <soc/oplus/system/oppo_project.h>
-#endif /* OPLUS_BUG_COMPATIBILITY */
+
 
 /*******************************************************************************
  *                              C O N S T A N T S
