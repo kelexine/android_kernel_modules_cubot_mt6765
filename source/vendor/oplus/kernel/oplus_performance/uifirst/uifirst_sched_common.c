@@ -591,9 +591,9 @@ inline void set_camera_opt(struct task_struct *p)
 void drop_ux_task_cpus(struct task_struct *p, struct cpumask *lowest_mask)
 {
 	unsigned int cpu = cpumask_first(lowest_mask);
-	#if defined (CONFIG_SCHED_WALT) && defined (OPLUS_FEATURE_UIFIRST)
+#ifdef CONFIG_SCHED_WALT
 	bool sf = is_sf(p);
-	#endif
+#endif
 
 	while (cpu < nr_cpu_ids) {
 		/* unlocked access */
@@ -608,7 +608,7 @@ void drop_ux_task_cpus(struct task_struct *p, struct cpumask *lowest_mask)
 			cpumask_clear_cpu(cpu, lowest_mask);
 		}
 
-	#if defined (CONFIG_SCHED_WALT) && defined (OPLUS_FEATURE_UIFIRST)
+#ifdef CONFIG_SCHED_WALT
 		if ((sysctl_slide_boost_enabled == 2  || sysctl_input_boost_enabled)&& sf) {
 			if (cpu < ux_prefer_cpu[0]) {
 				cpumask_clear_cpu(cpu, lowest_mask);
@@ -616,7 +616,7 @@ void drop_ux_task_cpus(struct task_struct *p, struct cpumask *lowest_mask)
 				cpumask_clear_cpu(cpu, lowest_mask);
 			}
 		}
-	#endif
+#endif
 		cpu = cpumask_next(cpu, lowest_mask);
 	}
 }
