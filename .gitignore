@@ -8,6 +8,7 @@
 *.mod.c
 *.mod.o
 *.mod.o.cmd
+*.symversions
 modules.order
 Module.symvers
 .tmp_versions/

@@ -22,13 +22,33 @@ endif
 ifndef TOP
     TOP := $(srctree)/..
 endif
+ifeq ($(wildcard $(TOP)/vendor/mediatek/kernel_modules),)
+    TOP := $(abspath $(src)/../../../../../..)
+endif
 $(info os option: $(os))
 # ---------------------------------------------------
 # ALPS Setting
 # ---------------------------------------------------
 ifneq ($(KERNEL_OUT),)
     ccflags-y += -imacros $(KERNEL_OUT)/include/generated/autoconf.h
+else
+    ccflags-y += -imacros $(objtree)/include/generated/autoconf.h
 endif
+
+ifeq ($(CONFIG_MTK_COMBO_CHIP_CONSYS_6765),y)
+    MTK_COMBO_CHIP ?= CONNAC
+    WLAN_CHIP_ID ?= 6765
+    CONFIG_MTK_COMBO_WIFI_HIF ?= axi
+    MODULE_NAME ?= wlan_drv_gen4m
+    MTK_ANDROID_WMT ?= y
+    WIFI_ENABLE_GCOV ?= n
+    MTK_ANDROID_EMI ?= y
+    MTK_WLAN_SERVICE ?= yes
+endif
+ifeq ($(KBUILD_EXTRA_SYMBOLS),)
+    KBUILD_EXTRA_SYMBOLS := $(abspath $(src)/../../../common/Module.symvers) $(abspath $(src)/../../adaptor/Module.symvers)
+endif
+ccflags-y += -Wno-error -Wno-error=strict-prototypes -Wno-strict-prototypes
 
 ifeq ($(KBUILD_MODPOST_FAIL_ON_WARNINGS),)
     # Force build fail on modpost warning

@@ -28,6 +28,8 @@ ifneq ($(CONFIG_MTK_COMBO),)
 
 ifneq ($(KERNEL_OUT),)
     ccflags-y += -imacros $(KERNEL_OUT)/include/generated/autoconf.h
+else
+    ccflags-y += -imacros $(objtree)/include/generated/autoconf.h
 endif
 
 ifeq ($(CONFIG_MTK_COMBO_CHIP),)
@@ -87,7 +89,7 @@ ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat
 ###############################################################################
 
 
-ccflags-y += -Wno-error
+ccflags-y += -Wno-error -Wno-error=strict-prototypes -Wno-strict-prototypes
 
 ifneq ($(filter "MT6628",$(CONFIG_MTK_COMBO_CHIP)),)
     ccflags-y += -D MT6628

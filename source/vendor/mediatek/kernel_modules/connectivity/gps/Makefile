@@ -17,11 +17,20 @@ ifeq ($(CONFIG_MTK_GPS_SUPPORT), y)
 
 ifneq ($(KERNEL_OUT),)
     ccflags-y += -imacros $(KERNEL_OUT)/include/generated/autoconf.h
+else
+    ccflags-y += -imacros $(objtree)/include/generated/autoconf.h
 endif
 
 ifndef TOP
     TOP := $(srctree)/..
 endif
+ifeq ($(wildcard $(TOP)/vendor/mediatek/kernel_modules),)
+    TOP := $(abspath $(src)/../../../..)
+endif
+ifeq ($(KBUILD_EXTRA_SYMBOLS),)
+    KBUILD_EXTRA_SYMBOLS := $(abspath $(src)/../common/Module.symvers)
+endif
+ccflags-y += -Wno-error -Wno-error=strict-prototypes -Wno-strict-prototypes
 ifeq ($(TARGET_BUILD_VARIANT),$(filter $(TARGET_BUILD_VARIANT),userdebug user))
     ldflags-y += -s
 endif

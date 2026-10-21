@@ -3,11 +3,20 @@
 
 ifneq ($(KERNEL_OUT),)
     ccflags-y += -imacros $(KERNEL_OUT)/include/generated/autoconf.h
+else
+    ccflags-y += -imacros $(objtree)/include/generated/autoconf.h
 endif
 
 ifndef TOP
     TOP := $(srctree)/..
 endif
+ifeq ($(wildcard $(TOP)/vendor/mediatek/kernel_modules),)
+    TOP := $(abspath $(src)/../../../../..)
+endif
+ifeq ($(KBUILD_EXTRA_SYMBOLS),)
+    KBUILD_EXTRA_SYMBOLS := $(abspath $(src)/../../common/Module.symvers)
+endif
+ccflags-y += -Wno-error -Wno-error=strict-prototypes -Wno-strict-prototypes
 
 # Force build fail on modpost warning
 KBUILD_MODPOST_FAIL_ON_WARNINGS := y
