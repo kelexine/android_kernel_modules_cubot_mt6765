@@ -977,6 +977,11 @@ INT32 mtk_wcn_consys_hw_init(VOID)
 	if (wmt_consys_ic_ops == NULL)
 		wmt_consys_ic_ops = mtk_wcn_get_consys_ic_ops();
 
+	if (wmt_consys_ic_ops == NULL) {
+		WMT_PLAT_PR_ERR("no consys IC ops for this platform (platform object not linked?), aborting init\n");
+		return -ENODEV;
+	}
+
 	iRet = platform_driver_register(&mtk_wmt_dev_drv);
 	if (iRet)
 		WMT_PLAT_PR_ERR("WMT platform driver registered failed(%d)\n", iRet);
@@ -995,7 +1000,7 @@ INT32 mtk_wcn_consys_hw_init(VOID)
 INT32 mtk_wcn_consys_hw_deinit(VOID)
 {
 
-	if (pEmibaseaddr) {
+	if (pEmibaseaddr && wmt_consys_ic_ops) {
 		if (wmt_consys_ic_ops->consys_ic_emi_coredump_remapping)
 			wmt_consys_ic_ops->consys_ic_emi_coredump_remapping(&pEmibaseaddr, 0);
 	}

@@ -351,6 +351,7 @@ INT32 wmt_plat_init(P_PWR_SEQ_TIME pPwrSeqTime, UINT32 co_clock_type)
 {
 	struct _CMB_STUB_CB_ stub_cb;
 	INT32 iret = -1;
+	INT32 hw_ret = 0;
 
 	if (wmt_detect_get_chip_type() == WMT_CHIP_TYPE_SOC) {
 		iret = mtk_wcn_consys_co_clock_type();
@@ -378,9 +379,17 @@ INT32 wmt_plat_init(P_PWR_SEQ_TIME pPwrSeqTime, UINT32 co_clock_type)
 	osal_sleepable_lock_init(&gOsSLock);
 
 	/* init hw */
-	if (wmt_detect_get_chip_type() == WMT_CHIP_TYPE_SOC)
-		iret += mtk_wcn_consys_hw_init();
-	else
+	if (wmt_detect_get_chip_type() == WMT_CHIP_TYPE_SOC) {
+		hw_ret = mtk_wcn_consys_hw_init();
+		if (hw_ret) {
+			/* Fail here: continuing would dereference missing consys IC ops and oops */
+			WMT_ERR_FUNC("mtk_wcn_consys_hw_init() fail(%d), aborting platform init\n", hw_ret);
+			mtk_wcn_cmb_stub_unreg();
+			osal_wake_lock_deinit(&wmt_wake_lock);
+			osal_sleepable_lock_deinit(&gOsSLock);
+			return hw_ret;
+		}
+	} else
 		iret += mtk_wcn_cmb_hw_init(pPwrSeqTime);
 
 	spin_lock_init(&g_bgf_irq_lock.lock);
