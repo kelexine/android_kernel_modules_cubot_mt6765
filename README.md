@@ -1,7 +1,6 @@
 <!--
 # File: README.md
 # Author: kelexine <https://github.com/kelexine>
-# Date: 2026-10-14
 # Purpose: Documentation and build guide for Cubot P50 out-of-tree kernel modules
 -->
 
@@ -10,7 +9,7 @@
 > Out-of-tree MediaTek connectivity and performance kernel modules for the Cubot P50 (marlon).
 
 ## What is this?
-This repository houses the out-of-tree vendor kernel modules for the Cubot P50 smartphone (`v956` / `marlon`), powered by the MediaTek MT6765 (Helio P35 / MT6762R) architecture. It provides the full MediaTek Wireless Management Task (`wmt_drv`), Wi-Fi Gen4m (`wlan_drv_gen4m`), Bluetooth HCI (`bt_drv`), GPS / GNSS (`gps_drv`), and MediaTek Event Trace (`met`) subsystems cleanly decoupled from vendor telemetry and built against the downstream Android 4.19 kernel.
+This repository houses the out-of-tree vendor kernel modules for the Cubot P50 smartphone (`v956` / `marlon`), powered by the MediaTek MT6765 (Helio P35 / MT6762R) architecture. It provides the full MediaTek Wireless Management Task (`wmt_drv`), Wi-Fi Gen4m (`wlan_drv_gen4m`), Bluetooth HCI (`bt_drv`), GPS / GNSS (`gps_drv`), and MediaTek Event Trace (`met`) subsystems cleanly decoupled from vendor telemetry and built against the downstream Android Linux 4.19-CIP kernel.
 
 ## Features
 - **Wi-Fi Gen4m (MT6631/CONNAC)**: Full 2.4 GHz 40 MHz (HT40) channel bandwidth enabled by default for Station (STA) and Wi-Fi Direct (P2P), unlocking up to 150 Mbps theoretical PHY throughput for high-speed local transfers (Quick Share, LocalSend).
@@ -46,7 +45,7 @@ ln -sfn android_kernel_modules_cubot_mt6765/source/vendor vendor
 ```
 
 ### Module Build Sequence
-The connectivity modules must be built against a configured and prepared kernel output tree (`KERNEL_OUT`). Because `wmt_drv` exports core symbols consumed by all other drivers, it must be compiled first:
+The connectivity modules must be built against a configured and prepared kernel output tree (`KERNEL_OUT`) using Clang 21+:
 
 ```bash
 export KERNEL_SRC="android_kernel_cubot_mt6765"
@@ -102,7 +101,7 @@ llvm-strip --strip-debug ${CONN}/**/*.ko ${MODULES_SRC}/vendor/mediatek/kernel_m
 ## Architecture
 ```mermaid
 graph TD
-    Kernel["android_kernel_cubot_mt6765 (Linux 4.19)"]
+    Kernel["android_kernel_cubot_mt6765 (Linux 4.19-CIP)"]
     WMT["wmt_drv.ko (Consys HW & STP Core)"]
     WLAN["wlan_drv_gen4m.ko (Wi-Fi 802.11ac)"]
     BT["bt_drv.ko (Bluetooth HCI)"]
